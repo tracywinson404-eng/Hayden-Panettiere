@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hayden Panettiere與黑暗陰謀揭秘</title>
+<style>
+body{margin:0;background:#0f0f12;color:#eee;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","Noto Sans HK",sans-serif}
+#loading{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1e1e22;padding:18px 28px;border-radius:14px}
+#viewer{display:flex;flex-direction:column;align-items:center;padding:24px 12px;gap:18px}
+canvas{background:#fff;border-radius:4px;box-shadow:0 6px 24px rgba(0,0,0,.45);max-width:96vw;height:auto}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+<div id="loading">載入中... Loading 12 pages...</div>
+<div id="viewer"></div>
+<script>
+const url = './Hayden_Panettiere_3.pdf';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+(async()=>{
+  const pdf = await pdfjsLib.getDocument(url).promise;
+  document.getElementById('loading').style.display='none';
+  const viewer = document.getElementById('viewer');
+  for(let i=1;i<=pdf.numPages;i++){
+    const page = await pdf.getPage(i);
+    const viewport = page.getViewport({scale: 2});
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    canvas.style.width = Math.min(viewport.width/2.2, 860)+'px';
+    viewer.appendChild(canvas);
+    await page.render({canvasContext:canvas.getContext('2d'), viewport}).promise;
+  }
+})();
+</script>
+</body>
+</html>
